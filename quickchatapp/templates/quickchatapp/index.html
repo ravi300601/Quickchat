@@ -1,0 +1,81 @@
+{% extends "quickchatapp/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24"
+                class="d-inline-block align-text-top">
+            Quick Chat
+        </a>
+        <div class="navbar-collapse justify-content-end">
+            <span class="navbar-text">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <h4>{{request.user.username}}</h4>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <img src="{{user.pic.url}}" alt="profile picture" class="rounded-circle img-fluid"
+                            style="width: 50px; height: 50px;" />
+                    </li>
+                </ul>
+            </span>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-3">
+            {% for friend in friends %}
+            <div class="card my-2" style="max-width: 340px;">
+                <a href="{% url 'details' friend.profile.id %}" class="text-decoration-none">
+                    <div class="row g-0">
+                        <div class="col-md-auto">
+                            <img src="{{ friend.profile.pic.url }}"
+                                class="rounded-circle img-fluid thumbnail my-2 ms-2" style="width: 75px; height: 75px;"
+                                alt="...">
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="card-body">
+                                <h5 class="card-title">{{friend.profile.name}}<span
+                                        class="badge bg-primary ms-2">0</span></h5>
+                                <p class="card-text"><small class="text-secondary">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-9 p-0 py-2">
+            <div class="container-md bg-body-secondary h-100 mb-2">
+                {% block details %}
+                <p>wd</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    setInterval(getNotification, 1000)
+    function getNotification(){
+        let url = "{% url 'notification' %}"
+
+        fetch(url)
+        .then(res=>res.json())
+        .then(data=>{
+            console.log(data)
+            let chatNotificationBtn = document.getElementsByClassName("badge");
+            for(let i = 0; i<data.length; i++){
+                chatNotificationBtn[i].innerHTML = data[i]
+            }
+        })
+        .catch(error => console.log(error))
+    }
+</script>
+
+{% endblock %}

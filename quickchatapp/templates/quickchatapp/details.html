@@ -1,0 +1,145 @@
+{% extends "quickchatapp/index.html" %}
+
+{% block details %}
+
+<div class="container-md p-1">
+    <div class="container-fuild">
+        <div class="row">
+            <div class="col-auto">
+                <img src="{{friend.profile.pic.url}}" alt="profile-picture"
+                    class="rounded-circle img-fluid thumbnail my-2" style="width: 30px; height: 30px;" alt="...">
+            </div>
+            <div class="col-auto my-2 ps-0">
+                <h4>{{friend.profile.name}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <hr class="border border-dark border-2 opacity-50">
+    <div class="container-md px-1 my-1 overflow-auto text-break" style="height: 500px;" id='chat_body'>
+        {% for chat in chats %}
+        {% if chat.msg_sender == user and chat.msg_receiver == profile %}
+
+        <div class="alert alert-primary">
+            {{chat}}
+        </div>
+
+        {% elif chat.msg_sender == profile and chat.msg_receiver == user %}
+
+        <div class="alert alert-success">
+            {{chat}}
+        </div>
+
+        {% endif %}
+        {% endfor %}
+    </div>
+    <div class="container-md px-1 mt-2">
+        <form action="" method="POST" class="row gx-1" id="sendform">
+            {% csrf_token %}
+            <div class="col-10">
+                {{form.body}}
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary w-100">Send</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+
+    var objDiv = document.getElementById("chat_body");
+    objDiv.scrollTop = objDiv.scrollHeight;
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    let form = document.getElementById("sendform")
+
+    form.addEventListener("submit", sendChat)
+
+    function sendChat(e) {
+        e.preventDefault()
+        let chatMessage = document.getElementById("msg_id").value;
+
+        // to fetch resources asynchronously across the network
+        async function postJSON(data, url) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST", // or 'PUT'
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                console.log("Success:", result);
+                let chat_body = document.getElementById('chat_body');
+                let chatMessageBox = document.createElement("div");
+                chatMessageBox.classList.add("alert", "alert-primary");
+                chatMessageBox.innerText = result;
+                chat_body.append(chatMessageBox);
+                document.getElementById("msg_id").value = '';
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        const data = { msg: chatMessage };
+        let url = "{% url 'sent_msg' friend.profile.id %}"
+        postJSON(data, url);
+    }
+
+    setInterval(receiveMessages, 2000);
+
+    let counter={{ chatCounts }};
+    
+    function receiveMessages() {
+        let url = "{% url 'rev_msg' friend.profile.id %}"
+        async function postJSON(url) {
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+                console.log("Success:", result);
+                if (result.length == 0) {
+                } else {
+                    let lastMsg = result[result.length - 1]
+
+                    if (counter == result.length) { console.log("there is no new chat"); }
+                    else {
+                        let chat_body = document.getElementById('chat_body');
+                        let chatMessageBox = document.createElement("div");
+                        chatMessageBox.classList.add("alert", "alert-success");
+                        chatMessageBox.innerText = lastMsg;
+                        chat_body.append(chatMessageBox);
+                        document.getElementById("msg_id").value = '';
+                    }
+                }
+                counter = result.length
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+        const data = { num: counter };
+        postJSON(url);
+    }
+</script>
+
+{% endblock %}
