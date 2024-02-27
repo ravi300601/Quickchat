@@ -48,7 +48,7 @@
 </div>
 
 <script>
-
+    // To keep scrollbar at bottom for recent chats
     var objDiv = document.getElementById("chat_body");
     objDiv.scrollTop = objDiv.scrollHeight;
 
@@ -70,7 +70,6 @@
     const csrftoken = getCookie('csrftoken');
 
     let form = document.getElementById("sendform")
-
     form.addEventListener("submit", sendChat)
 
     function sendChat(e) {
@@ -97,6 +96,10 @@
                 chatMessageBox.innerText = result;
                 chat_body.append(chatMessageBox);
                 document.getElementById("msg_id").value = '';
+
+                // To keep scrollbar at bottom for recent chats
+                var objDiv = document.getElementById("chat_body");
+                objDiv.scrollTop = objDiv.scrollHeight;
             } catch (error) {
                 console.error("Error:", error);
             }
@@ -130,6 +133,9 @@
                         chatMessageBox.innerText = lastMsg;
                         chat_body.append(chatMessageBox);
                         document.getElementById("msg_id").value = '';
+                        // To keep scrollbar at bottom for recent chats
+                        var objDiv = document.getElementById("chat_body");
+                        objDiv.scrollTop = objDiv.scrollHeight;
                     }
                 }
                 counter = result.length

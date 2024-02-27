@@ -52,6 +52,7 @@ def receivedMessages(request, pk):
     profile = Profile.objects.get(id=friend.profile.id)
     arr = []
     chats = ChatMessage.objects.filter(msg_receiver=user, msg_sender=profile)
+    chats.update(seen=True)
     for chat in chats:
         arr.append(chat.body)
     return JsonResponse(arr, safe=False)
