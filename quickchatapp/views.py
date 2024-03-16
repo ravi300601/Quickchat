@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Profile, Friend, ChatMessage
+from .models import Profile, Friend, ChatMessage, FriendRequest
 from .forms import ChatMessageForm
 from django.http import JsonResponse
 import json
@@ -65,3 +65,11 @@ def chatNotification(request):
         chats = ChatMessage.objects.filter(msg_sender=friend.profile.id, msg_receiver=user, seen=False)
         arr.append(chats.count())
     return JsonResponse(arr, safe=False)
+
+def sentFriendRequests(request, pk):
+    user = request.user.profile
+    friend = Friend.objects.get(profile_id=pk)
+    profile = Profile.objects.get(id=friend.profile.id)
+    friend_request = FriendRequest.objects.create(sender=user, receiver=profile, is_active=True)
+    breakpoint()
+    return JsonResponse(json.dumps(friend_request), safe=False)
