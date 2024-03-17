@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Profile, Friend, ChatMessage, FriendRequest
-from .forms import ChatMessageForm
+from django.contrib.auth import authenticate, login, logout
+from .forms import ChatMessageForm, UserForm
 from django.http import JsonResponse
 import json
 
@@ -36,6 +37,41 @@ def details(request, pk):
             "chats": chats,
             "chatCounts": receiveChats.count()}
     return render(request, "quickchatapp/details.html", context)
+
+def register(request):
+    form = UserForm()
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = request.POST['username']
+            password = request.POST['password1']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("index")
+    context={"form": form}
+    return render(request,"quickchatapp/register.html", context)
+
+def signin(request):
+    if request.user.is_authenticated:
+        return redirect("index")
+    error_msg = None
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("index")
+        else:
+            error_msg = "Invalid Credentials"
+    context={"msg": error_msg}
+    return render(request,"quickchatapp/login.html", context)
+
+def signout(request):
+    logout(request)
+    return redirect("login")
 
 def sentMessages(request, pk):
     user = request.user.profile

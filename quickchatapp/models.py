@@ -5,12 +5,14 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
     pic = models.ImageField(upload_to="img", blank=True, null=True)
     friends = models.ManyToManyField('Friend', related_name="my_friends")
 
     def __str__(self):
-        return self.name
+        return self.username
 
     def add_friend(self, account):
         """
@@ -52,7 +54,7 @@ class Friend(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.profile.name
+        return self.profile.username
         
 
 class ChatMessage(models.Model):
@@ -79,7 +81,7 @@ class FriendRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.sender.name
+        return self.sender.username
 
     def accept(self):
         """
