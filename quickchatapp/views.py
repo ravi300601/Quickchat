@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Profile, Friend, ChatMessage, FriendRequest
 from django.contrib.auth import authenticate, login, logout
-from .forms import ChatMessageForm, UserForm
+from .forms import ChatMessageForm, UserForm, ProfileForm
 from django.http import JsonResponse
 import json
 
@@ -72,6 +72,18 @@ def signin(request):
 def signout(request):
     logout(request)
     return redirect("login")
+
+def update_profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    form = ProfileForm(instance=profile)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect("update_profile")
+    context = {"form": form}
+    return render(request, "quickchatapp/update_profile.html", context)
 
 def sentMessages(request, pk):
     user = request.user.profile

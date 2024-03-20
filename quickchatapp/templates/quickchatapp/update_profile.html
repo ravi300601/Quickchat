@@ -1,0 +1,15 @@
+{% extends "quickchatapp/index.html" %}
+
+{% block details %}
+
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for field in form %}
+        {{field}}
+    {% endfor %}
+
+    <button>Submit</button>
+</form>
+
+{% endblock %}
