@@ -1,0 +1,91 @@
+{% extends "quickchatapp/base.html" %}
+{% load custom_filter %}
+
+{% block content %}
+
+<div>
+    <h3><span><a href="{% url 'index' %}">Quick Chat</a> | </span> Suggestions</h3>
+
+    <div>
+        <strong>{{request.user.username}}</strong>
+    </div>
+<div>
+{% for friend in s_friends %}
+
+<div>
+    <div class="pic">
+        <img src="" alt="">
+    </div>
+    <div>
+        <div>
+            <h5>{{friend.username}}</h5>
+            <p>follower</p>
+        </div>
+
+        {% if friend.id|if_id_in_queryset:f_friend %}
+
+        <div class="btn">
+            <div class="confirm-btn add-btn disable" data-id={{friend.id}}>Request Sent</div>
+            <div class="del-btn" data-id={{friend.id}}>Cancel Request</div>
+        </div>
+        
+        {% else %}
+        <div class="btn">
+            <div class="confirm-btn add-btn" data-id={{friend.id}}>Add Friend</div>
+            <div class="del-btn" data-id={{friend.id}}>Remove</div>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
+{% endfor %}
+</div>
+</div>
+
+<script>
+    let add_btns = document.querySelectorAll(".add-btn")
+    let cancel_btns = document.querySelectorAll(".del-btn")
+
+    //looping through the "add-friend button"
+    for(let btn of add_btns){
+        btn.addEventListener("click", send_friend_request)
+    }
+
+    async function postJSON(data, btn) {
+        let url = "{% url 'send-request' %}"
+        try {
+            const response = await fetch(url, {
+            method: "POST", // or 'PUT'
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            console.log("Success:", result);
+            btn.innerText = "Request sent"
+            btn.classList.add("disable")
+            btn.nextElementSibling.style.fontSize = "13px"
+            btn.nextElementSibling.innerText = 'Cancel Request'
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    function send_friend_request(e){
+        const btn = e.target
+        const datasetId = e.target.dataset.id;
+        postJSON(datasetId, btn);
+    }
+</script>
+
+{% endblock content %}
+
+.disable{
+    pointer-events: none;
+    opacity: 0.7;
+    font-size: 14px;
+}

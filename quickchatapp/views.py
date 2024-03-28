@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Profile, Friend, ChatMessage, FriendRequest
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from .forms import ChatMessageForm, UserForm, ProfileForm
 from django.http import JsonResponse
 import json
@@ -85,6 +85,23 @@ def update_profile(request):
     context = {"form": form}
     return render(request, "quickchatapp/update_profile.html", context)
 
+def suggestion(request):
+    all_user = get_user_model()
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    profile_friends = profile.friends.all()
+    suggested_friends = all_user.objects.exclude(profile__friends__in = profile_friends).exclude(profile=profile)
+    friend_requests = FriendRequest.objects.filter(receiver__in = suggested_friends, sender = request.user)
+    context = {"s_friends": suggested_friends, "f_friend": friend_requests}
+    return render(request, "quickchatapp/suggestion.html", context)
+
+def send_friend_request(request):
+    data = json.loads(request.body)
+    user = get_user_model()
+    receiver = user.objects.get(id = data)
+    friend_request = FriendRequest.objects.create(sender=request.user, receiver=receiver)
+    return JsonResponse("it is going", safe=False)
+
 def sentMessages(request, pk):
     user = request.user.profile
     friend = Friend.objects.get(profile_id=pk)
@@ -113,11 +130,3 @@ def chatNotification(request):
         chats = ChatMessage.objects.filter(msg_sender=friend.profile.id, msg_receiver=user, seen=False)
         arr.append(chats.count())
     return JsonResponse(arr, safe=False)
-
-def sentFriendRequests(request, pk):
-    user = request.user.profile
-    friend = Friend.objects.get(profile_id=pk)
-    profile = Profile.objects.get(id=friend.profile.id)
-    friend_request = FriendRequest.objects.create(sender=user, receiver=profile, is_active=True)
-    breakpoint()
-    return JsonResponse(json.dumps(friend_request), safe=False)
