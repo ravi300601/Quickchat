@@ -1,7 +1,65 @@
 {% extends "quickchatapp/base.html" %}
 
 {% block content %}
-<div>
+
+<style>
+    body {
+        background-color: #d9dcdc94; /* Light gray background */
+        font-family: sans-serif;
+      }
+      .login-form {
+        width: 375px;
+        margin: 50px auto;
+        padding: 30px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #fff; /* White form background */
+      }
+      .login-form h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    </style>
+    <div class="container" style="margin-top: 150px;">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-md-4 border bg-light shadow p-3 mb-5 bg-body-tertiary rounded">
+          <h1 class="text-center mb-4 fst-italic">Quick Chat</h1>
+          <form class="login-form p-3 bg-body-tertiary rounded" action="" method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+            {% if field.errors %}
+            <div class="text-danger">
+                {{field.errors}}
+            </div>
+            {% endif %}
+            <div class="input-group mb-3">
+                {% if field.name == 'password2' or  field.name == 'password1' %}
+                <span class="input-group-text" id="password"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                    <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                    <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                  </svg>
+                </span>
+                {% else %}
+                <span class="input-group-text">@</span>
+                {% endif %}
+                {{field}}
+            </div>
+            {% endfor %}
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+            <div class="mt-3 text-center fs-6">
+                <span><a href="{% url 'login' %}">Login</a><br> if you have an account.</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+<!-- <div>
     <div>
         <a href=""><h1>QuickChat</h1></a>
         <p>Sign up to get started.</p>
@@ -20,5 +78,5 @@
             <span><a href="{% url 'login' %}">Login</a> if you have an account.</span>
         </form>
     </div>
-</div>
+</div> -->
 {% endblock content %}
