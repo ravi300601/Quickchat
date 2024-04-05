@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import Profile, Friend, ChatMessage, FriendRequest
+from .models import Profile, Friend, ChatMessage, FriendRequest, Notification
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from .forms import ChatMessageForm, UserForm, ProfileForm
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
 
 # Create your views here.
+@login_required(login_url="login")
 def index(request):
     user = request.user.profile
     friends = user.friends.all()
@@ -39,6 +41,8 @@ def details(request, pk):
     return render(request, "quickchatapp/details.html", context)
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("index")
     form = UserForm()
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -73,6 +77,7 @@ def signout(request):
     logout(request)
     return redirect("login")
 
+@login_required(login_url='login')
 def update_profile(request):
     user = request.user
     profile = Profile.objects.get(user=user)
@@ -85,11 +90,47 @@ def update_profile(request):
     context = {"form": form}
     return render(request, "quickchatapp/update_profile.html", context)
 
+@login_required(login_url='login')
+def friend_request(request):
+    user = request.user
+    friend_requests = FriendRequest.objects.filter(receiver = user)
+    context = {"f_requests": friend_requests}
+    print('\n\n\n',friend_requests)
+    return render(request, "quickchatapp/friend_request.html", context)
+
+def accept_friend_request(request):
+    id = json.loads(request.body)
+    user_id = id
+    user = get_user_model()
+    n_user = user.objects.get(id=user_id)
+    profile = Profile.objects.get(user_id=request.user.id)
+    profile2 = Profile.objects.get(user_id=user_id)
+    f_requests = FriendRequest.objects.get(sender=n_user, receiver=request.user)
+    msg = None
+    if profile:
+        if profile.friends.filter(id=user_id).exists():
+            profile.friends.remove(n_user)
+            msg = "no"
+        else:
+            profile.friends.add(n_user)
+            f_requests.delete()
+            notification = Notification.objects.create(sender=request.user, receiver=n_user,
+                                                        description=f"Hi, {request.user.username} accepted your friend request.")
+            msg="yes"
+    if profile2:
+        if profile2.friends.filter(id=request.user.id).exists():
+            profile2.friends.remove(request.user)
+        else:
+            profile2.friends.add(request.user)
+    return JsonResponse(msg, safe=False)
+
+@login_required(login_url='login')
 def suggestion(request):
     all_user = get_user_model()
     user = request.user
     profile = Profile.objects.get(user=user)
     profile_friends = profile.friends.all()
+    print('\n\n\ns',profile_friends)
     suggested_friends = all_user.objects.exclude(profile__friends__in = profile_friends).exclude(profile=profile)
     friend_requests = FriendRequest.objects.filter(receiver__in = suggested_friends, sender = request.user)
     context = {"s_friends": suggested_friends, "f_friend": friend_requests}

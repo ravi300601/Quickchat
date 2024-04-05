@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Profile, Friend, ChatMessage, FriendRequest
+from .models import Profile, Friend, ChatMessage, FriendRequest, Notification
 
 
 # Register your models here.
-admin.site.register([Profile, Friend, ChatMessage, FriendRequest])
+admin.site.register([Profile, Friend, ChatMessage, FriendRequest, Notification])

@@ -1,0 +1,82 @@
+{% extends "quickchatapp/base.html" %}
+
+{% block content %}
+
+<div>
+    <h3>
+        <span><a href="{% url 'index' %}">Quick Chat</a> | </span>Friend Requests
+    </h3>
+    <div>
+        <p>You have 2 friend requests</p>
+        <p><span><strong>{{request.user.username}}</strong></span></p>
+    </div>
+</div>
+
+<div>
+
+    {% for fri_request in f_requests %}
+
+    <div class="pic">
+        <img src="" alt="">
+    </div>
+
+    <div>
+        <div>
+            <h5>{{ fri_request.sender.username }}</h5>
+            <small>1 day ago</small>
+        </div>
+
+        <div class="btn">
+            <div class="confirm-btn" data-id="{{fri_request.sender.id}}">Confirm</div>
+            <div class="del-btn" data-id="{{fri_request.sender.id}}">Delete</div>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+
+<script>
+    // selecting all the confirm btn on this current page
+    let confirm_btns = document.querySelectorAll(".confirm-btn")
+
+    // looping through the confirm-btns
+    for(let btn of confirm_btns){
+        btn.addEventListener("click", addfriend)
+    }
+
+    async function postJSON(data, btn) {
+        let url = "{% url 'accept-request' %}"
+        try {
+            const response = await fetch(url, {
+            method: "POST", // or 'PUT'
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            console.log("Success:", result);
+
+            if (result == 'yes'){
+                btn.innerText = "Confirmed"
+                btn.classList.add("disable")
+                btn.nextElementSibling.classList.add("disable")
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    function addfriend(e){
+        console.log(e.target);
+        let data = e.target.dataset.id
+        let btn = e.target
+        postJSON(data, btn)
+    }
+
+</script>
+
+
+{% endblock %}
