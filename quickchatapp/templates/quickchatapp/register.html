@@ -59,24 +59,4 @@
       </div>
     </div>
 
-<!-- <div>
-    <div>
-        <a href=""><h1>QuickChat</h1></a>
-        <p>Sign up to get started.</p>
-        <form action="" method="POST">
-            {% csrf_token %}
-
-            {% for field in form %}
-            {% if field.errors %}
-            {{field.errors}}
-            {% endif %}
-                {{field}}
-                <br>
-            {% endfor %}
-
-            <button>Register</button>
-            <span><a href="{% url 'login' %}">Login</a> if you have an account.</span>
-        </form>
-    </div>
-</div> -->
 {% endblock content %}

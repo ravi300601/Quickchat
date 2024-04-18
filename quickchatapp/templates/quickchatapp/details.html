@@ -2,45 +2,94 @@
 
 {% block details %}
 
-<div class="container-md p-1">
+<style>
+    .chat-me, .chat-user {
+        position: relative;
+        color: #fffefe;
+        border-radius: 20px;
+        padding: 15px 20px;
+        max-width: 80%;
+        margin-bottom: 15px;
+        font-family: Arial, sans-serif;
+    }
+    .chat-user {
+        background: linear-gradient(to right,#6699CC, #476EAE);
+        left: 2%;
+    }
+    .chat-me {
+        background: linear-gradient(to right, #4D5D53,#778A7E);
+    }
+
+    .chat-me::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -15px;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 15px solid #778A7E;
+    }
+
+    .chat-user::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: -15px;
+        transform: translateY(-50%);
+        border-width: 10px 15px 10px 0;
+        border-style: solid;
+        border-color: transparent #6699CC transparent transparent;
+        display: block;
+        width: 0;
+    }
+</style>
+
+<div class="container-md me-1">
     <div class="container-fuild">
         <div class="row">
             <div class="col-auto">
                 <img src="{{friend.profile.pic.url}}" alt="profile-picture"
                     class="rounded-circle img-fluid thumbnail my-2" style="width: 30px; height: 30px;" alt="...">
             </div>
-            <div class="col-auto my-2 ps-0">
-                <h4>{{friend.profile.name}}</h4>
+            <div class="col-auto mt-2 pt-1 ps-0">
+                <h5>{{friend.profile.username}}</h5>
             </div>
         </div>
     </div>
 
-    <hr class="border border-dark border-2 opacity-50">
-    <div class="container-md px-1 my-1 overflow-auto text-break" style="height: 500px;" id='chat_body'>
+    <hr class="border border-dark border-2 opacity-50 mt-0">
+    <div class="container-md px-1 mb-1 overflow-auto text-break" style="height: 530px;" id='chat_body'>
         {% for chat in chats %}
         {% if chat.msg_sender == user and chat.msg_receiver == profile %}
 
-        <div class="alert alert-primary">
-            {{chat}}
+        <div class="container-md d-flex justify-content-end">
+            <div class="chat-me">
+                {{chat}}
+            </div>
         </div>
 
         {% elif chat.msg_sender == profile and chat.msg_receiver == user %}
 
-        <div class="alert alert-success">
-            {{chat}}
+        <div class="container-md d-flex justify-content-start">
+            <div class="chat-user">
+                {{chat}}
+            </div>
         </div>
 
         {% endif %}
         {% endfor %}
     </div>
-    <div class="container-md px-1 mt-2">
+    <div class="container-md px-1">
         <form action="" method="POST" class="row gx-1" id="sendform">
             {% csrf_token %}
             <div class="col-10">
                 {{form.body}}
             </div>
             <div class="col-2">
-                <button type="submit" class="btn btn-primary w-100">Send</button>
+                <button type="submit" class="btn btn-secondary w-100">Send</button>
             </div>
         </form>
 
@@ -75,9 +124,12 @@
                 console.log("Success:", result);
                 let chat_body = document.getElementById('chat_body');
                 let chatMessageBox = document.createElement("div");
-                chatMessageBox.classList.add("alert", "alert-primary");
+                let chatMessageDiv = document.createElement("div");
+                chatMessageDiv.classList.add("container-md", "d-flex", "justify-content-end");
+                chatMessageBox.classList.add("chat-me");
                 chatMessageBox.innerText = result;
-                chat_body.append(chatMessageBox);
+                chatMessageDiv.append(chatMessageBox);
+                chat_body.append(chatMessageDiv);
                 document.getElementById("msg_id").value = '';
 
                 // To keep scrollbar at bottom for recent chats
@@ -112,9 +164,12 @@
                     else {
                         let chat_body = document.getElementById('chat_body');
                         let chatMessageBox = document.createElement("div");
-                        chatMessageBox.classList.add("alert", "alert-success");
+                        let chatMessageDiv = document.createElement("div");
+                        chatMessageDiv.classList.add("container-md", "d-flex", "justify-content-start");
+                        chatMessageBox.classList.add("chat-user");
                         chatMessageBox.innerText = lastMsg;
-                        chat_body.append(chatMessageBox);
+                        chatMessageDiv.append(chatMessageBox);
+                        chat_body.append(chatMessageDiv);
                         document.getElementById("msg_id").value = '';
                         // To keep scrollbar at bottom for recent chats
                         var objDiv = document.getElementById("chat_body");

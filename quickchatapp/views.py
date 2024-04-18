@@ -95,7 +95,6 @@ def friend_request(request):
     user = request.user
     friend_requests = FriendRequest.objects.filter(receiver = user)
     context = {"f_requests": friend_requests}
-    print('\n\n\n',friend_requests)
     return render(request, "quickchatapp/friend_request.html", context)
 
 def accept_friend_request(request):
@@ -117,11 +116,15 @@ def accept_friend_request(request):
             notification = Notification.objects.create(sender=request.user, receiver=n_user,
                                                         description=f"Hi, {request.user.username} accepted your friend request.")
             msg="yes"
+        if not Friend.objects.filter(profile_id=profile.id).exists():
+            Friend.objects.create(profile_id=profile.id)
     if profile2:
         if profile2.friends.filter(id=request.user.id).exists():
             profile2.friends.remove(request.user)
         else:
             profile2.friends.add(request.user)
+        if not Friend.objects.filter(profile_id=profile2.id).exists():
+            Friend.objects.create(profile_id=profile2.id)
     return JsonResponse(msg, safe=False)
 
 @login_required(login_url='login')
@@ -130,7 +133,6 @@ def suggestion(request):
     user = request.user
     profile = Profile.objects.get(user=user)
     profile_friends = profile.friends.all()
-    print('\n\n\ns',profile_friends)
     suggested_friends = all_user.objects.exclude(profile__friends__in = profile_friends).exclude(profile=profile)
     friend_requests = FriendRequest.objects.filter(receiver__in = suggested_friends, sender = request.user)
     context = {"s_friends": suggested_friends, "f_friend": friend_requests}

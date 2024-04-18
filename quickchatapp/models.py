@@ -8,47 +8,11 @@ class Profile(models.Model):
     username = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
-    pic = models.ImageField(upload_to="img", blank=True, null=True)
+    pic = models.ImageField(upload_to="img", blank=True, null=True, default="img/default.webp")
     friends = models.ManyToManyField(User, related_name="my_friends", blank=True)
 
     def __str__(self):
         return self.username
-
-    # def add_friend(self, account):
-    #     """
-    #     Add a new friend
-    #     """
-    #     if not account in self.friend.all():
-    #         self.friends.add(account)
-
-    # def remove_friend(self, account):
-    #     """
-    #     Remove a new friend
-    #     """
-    #     if account in self.friend.all():
-    #         self.friends.remove(account)
-
-    # def unfriend(self, removee):
-    #     """
-    #     Initiate the action of unfriending soneone
-    #     """
-    #     remover_friends_list = self #person terminating the friendship
-
-    #     # remove friend from removee_friend_list
-    #     remover_friends_list.remove_friend(removee)
-        
-    #     #remove friend from removee friend list
-    #     friend_list = Profile.objects.get(user=removee)
-    #     friend_list.remove_friend(self.user)
-
-    # def is_mutual_friend(self,friend):
-    #     """
-    #     Is this a friend?
-    #     """
-    #     if friend in self.friends.all():
-    #         return True
-    #     return False
-
         
 class Friend(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)

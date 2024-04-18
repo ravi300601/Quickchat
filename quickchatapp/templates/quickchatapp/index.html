@@ -2,58 +2,87 @@
 
 {% block content %}
 
-<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<style>
+    ::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+</style>
+
+<div class="container rounded bg-body-tertiary shadow rounded" style="margin-top: 100px;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-1 py-0">
         <a class="navbar-brand" href="#">
-            <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24"
-                class="d-inline-block align-text-top">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+                <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+              </svg>
+            <!-- <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24"
+                class="d-inline-block align-text-top"> -->
             Quick Chat
         </a>
-        <div class="navbar-collapse justify-content-end">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Chats</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'friend_request' %}">Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'suggestion' %}">Suggestions</a>
+              </li>
+            </ul>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <span class="navbar-text">
                 <ul class="navbar-nav">
-                    <a href="{% url 'logout' %}">
-                    Logout
-                    </a>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link mt-1" href="{% url 'logout' %}">
+                        <span>Logout</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mt-1" href="#">
                             <h4>{{request.user.username}}</h4>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <img src="{{ user.pic.url }}" alt="profile picture" class="rounded-circle img-fluid"
+                        <img src="{{ request.user.profile.pic.url }}" alt="profile picture" class="rounded-circle img-fluid mt-1"
                             style="width: 50px; height: 50px;" />
                     </li>
                 </ul>
             </span>
-        </div>
     </nav>
 
     <div class="row">
-        <div class="col-md-3">
-            {% for friend in friends %}
-            <div class="card my-2" style="max-width: 340px;">
-                <a href="{% url 'details' friend.profile.id %}" class="text-decoration-none">
-                    <div class="row g-0">
-                        <div class="col-md-auto">
-                            <img src="{{ friend.profile.pic.url }}"
-                                class="rounded-circle img-fluid thumbnail my-2 ms-2" style="width: 75px; height: 75px;"
-                                alt="...">
-                        </div>
-                        <div class="col-md-auto">
-                            <div class="card-body">
-                                <h5 class="card-title">{{friend.profile.username}}<span
-                                        class="badge bg-primary ms-2">0</span></h5>
-                                <p class="card-text"><small class="text-secondary">Last updated 3 mins ago</small>
-                                </p>
+        <div class="col-md-3 p-1">
+            <div class="container-md overflow-auto px-1 my-1 bg-body-secondary" style="height: 650px;">
+                {% for friend in friends %}
+                <div class="card my-2" style="max-width: 340px;">
+                    <a href="{% url 'details' friend.profile.id %}" class="text-decoration-none">
+                        <div class="row g-0">
+                            <div class="col-md-auto">
+                                <img src="{{ friend.profile.pic.url }}"
+                                    class="rounded-circle img-fluid thumbnail my-2 ms-2" style="width: 75px; height: 75px;"
+                                    alt="...">
+                            </div>
+                            <div class="col-md-auto">
+                                <div class="card-body text-dark">
+                                    <h5 class="card-title">{{friend.profile.username}}<span
+                                            class="badge bg-secondary ms-2">0</span></h5>
+                                    <p class="card-text"><small class="text-secondary">Last updated 3 mins ago</small>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-        <div class="col-md-9 p-0 py-2">
+        <div class="col-md-9 p-1 py-2">
             <div class="container-md bg-body-secondary h-100 mb-2">
                 {% block details %}
                 <p>wd</p>
