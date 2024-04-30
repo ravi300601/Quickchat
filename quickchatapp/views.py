@@ -127,6 +127,13 @@ def accept_friend_request(request):
             Friend.objects.create(profile_id=profile2.id)
     return JsonResponse(msg, safe=False)
 
+def cancel_friend_request(request):
+    data = json.loads(request.body)
+    user = get_user_model()
+    receiver = user.objects.get(id = data)
+    friend_request = FriendRequest.objects.filter(sender=request.user, receiver=receiver).delete()
+    return JsonResponse("yes", safe=False)
+
 @login_required(login_url='login')
 def suggestion(request):
     all_user = get_user_model()
@@ -144,6 +151,13 @@ def send_friend_request(request):
     receiver = user.objects.get(id = data)
     friend_request = FriendRequest.objects.create(sender=request.user, receiver=receiver)
     return JsonResponse("it is going", safe=False)
+
+def reject_friend_request(request):
+    data = json.loads(request.body)
+    user = get_user_model()
+    receiver = user.objects.get(id = data)
+    friend_request = FriendRequest.objects.filter(sender=receiver, receiver=request.user).delete()
+    return JsonResponse("yes", safe=False)
 
 def sentMessages(request, pk):
     user = request.user.profile

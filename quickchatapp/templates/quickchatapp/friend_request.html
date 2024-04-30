@@ -1,51 +1,76 @@
-{% extends "quickchatapp/base.html" %}
+{% extends "quickchatapp/index.html" %}
 
-{% block content %}
+{% block details %}
 
-<div>
-    <h3>
-        <span><a href="{% url 'index' %}">Quick Chat</a> | </span>Friend Requests
-    </h3>
-    <div>
-        <p>You have 2 friend requests</p>
-        <p><span><strong>{{request.user.username}}</strong></span></p>
-    </div>
-</div>
-
-<div>
-
-    {% for fri_request in f_requests %}
-
-    <div class="pic">
-        <img src="" alt="">
+<div class="container p-0 pt-1">
+    <div class="container">
+        <h4>Friend Requests</h4>
     </div>
 
-    <div>
-        <div>
-            <h5>{{ fri_request.sender.username }}</h5>
-            <small>1 day ago</small>
+    <hr class="border border-dark border-2 opacity-50 mt-0">
+
+    <div class="container-md px-1 pb-0 overflow-auto" style="height: 580px;">
+        <div class="row row-cols-md-3 g-2">
+
+            {% for friend in f_requests %}
+
+            <div class="col-sm-6">
+                <div class="card mb-0 bg-secondary bg-opacity-10 bg-gradient" style="max-width: 350px;  max-height: 120px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 p-1">
+                            <img src="{{friend.sender.profile.pic.url}}" class="img-fluid rounded h-100" style="max-height: 110px;" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body pt-1">
+                                <h5 class="card-title">{{friend.sender.username}}</h5>
+                                <p class="card-text" id="accept-text" style="font-size: 15px;">Requested to follow you</p>
+                                <p class="card-text">
+
+                                <div class="container ps-0">
+                                    <div class="btn btn-primary btn-sm confirm-btn" title="Accept Request" data-id={{friend.sender.id}}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-down" viewBox="0 0 16 16">
+                                        <path d="M12.5 9a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7m.354 5.854 1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V10.5a.5.5 0 0 0-1 0v2.793l-.646-.647a.5.5 0 0 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                                        <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+                                      </svg></div>
+                                    <div class="btn btn-danger btn-sm del-btn" title="Delete Request" data-id={{friend.sender.id}}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-fill-x" viewBox="0 0 16 16">
+                                            <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+                                            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+
         </div>
-
-        <div class="btn">
-            <div class="confirm-btn" data-id="{{fri_request.sender.id}}">Confirm</div>
-            <div class="del-btn" data-id="{{fri_request.sender.id}}">Delete</div>
-        </div>
-    </div>
-
-    {% endfor %}
-</div>
 
 <script>
     // selecting all the confirm btn on this current page
     let confirm_btns = document.querySelectorAll(".confirm-btn")
+    let delete_btns = document.querySelectorAll(".del-btn")
 
     // looping through the confirm-btns
     for(let btn of confirm_btns){
         btn.addEventListener("click", addfriend)
     }
 
+    for(let btn of delete_btns){
+        btn.addEventListener("click", deletefriend)
+    }
+
     async function postJSON(data, btn) {
-        let url = "{% url 'accept-request' %}"
+        let url = ""
+        if (btn.title.startsWith('Delete')){
+            url = "{% url 'reject-request' %}"
+        }else{
+            url = "{% url 'accept-request' %}"
+        }
         try {
             const response = await fetch(url, {
             method: "POST", // or 'PUT'
@@ -60,9 +85,16 @@
             console.log("Success:", result);
 
             if (result == 'yes'){
-                btn.innerText = "Confirmed"
-                btn.classList.add("disable")
-                btn.nextElementSibling.classList.add("disable")
+                let msg = ""
+                if (btn.title.startsWith('Delete')){
+                   msg = "You rejected the request"
+                   btn.previousElementSibling.style.display = 'none'
+                }else{
+                    msg = "You accepted the request"
+                    btn.nextElementSibling.style.display = 'none'
+                }
+                document.getElementById('accept-text').innerHTML = msg
+                btn.style.display = 'none'
             }
         } catch (error) {
             console.error("Error:", error);
@@ -70,7 +102,12 @@
     }
 
     function addfriend(e){
-        console.log(e.target);
+        let data = e.target.dataset.id
+        let btn = e.target
+        postJSON(data, btn)
+    }
+
+    function deletefriend(e){
         let data = e.target.dataset.id
         let btn = e.target
         postJSON(data, btn)
@@ -78,5 +115,4 @@
 
 </script>
 
-
-{% endblock %}
+{% endblock details %}

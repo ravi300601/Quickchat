@@ -15,6 +15,11 @@ class UserForm(UserCreationForm):
         fields = ["username", "first_name", "last_name", "password1", "password2"]
 
 class ProfileForm(ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'form-control', 'aria-label': 'Username', 'aria-describedby': 'username'}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'First Name', 'class': 'form-control', 'aria-label': 'Firstname', 'aria-describedby': 'firstname'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Last Name', 'class': 'form-control', 'aria-label': 'Lastname', 'aria-describedby': 'lastname'}))
+    # pic = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'upload image', 'class': 'form-control', 'aria-label': 'Picture', 'aria-describedby': 'picture', 'type': 'file'}))
+
     class Meta:
         model = Profile
         fields = ["username", "first_name", "last_name", "pic"]

@@ -1,15 +1,32 @@
 {% extends "quickchatapp/index.html" %}
 
-{% block content %}
+{% block mutual_friend %}
 
-<form action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
 
-    {% for field in form %}
-        {{field}}
-    {% endfor %}
+<div class="container-md bg-body-secondary h-100 mb-2 d-flex justify-content-center">
+    <form action="" method="POST" enctype="multipart/form-data" class="login-form p-3 rounded w-50">
+        {% csrf_token %}
 
-    <button>Submit</button>
-</form>
+        {% for field in form %}
+        <div class="input-group mb-3">
+        {% if field.name == 'pic' %}
 
-{% endblock content %}
+        <div>
+            {{field}}
+        </div>
+
+        {% else %}
+
+            <span class="input-group-text">@</span>
+
+            {{field}}
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock mutual_friend %}
