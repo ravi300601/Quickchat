@@ -93,8 +93,9 @@ def update_profile(request):
 @login_required(login_url='login')
 def friend_request(request):
     user = request.user
+    friends = user.profile.friends.all()
     friend_requests = FriendRequest.objects.filter(receiver = user)
-    context = {"f_requests": friend_requests}
+    context = {"f_requests": friend_requests, "friends": friends}
     return render(request, "quickchatapp/friend_request.html", context)
 
 def accept_friend_request(request):
@@ -142,7 +143,7 @@ def suggestion(request):
     profile_friends = profile.friends.all()
     suggested_friends = all_user.objects.exclude(profile__friends__in = profile_friends).exclude(profile=profile)
     friend_requests = FriendRequest.objects.filter(receiver__in = suggested_friends, sender = request.user)
-    context = {"s_friends": suggested_friends, "f_friend": friend_requests}
+    context = {"s_friends": suggested_friends, "f_friend": friend_requests, "friends": profile_friends}
     return render(request, "quickchatapp/suggestion.html", context)
 
 def send_friend_request(request):
