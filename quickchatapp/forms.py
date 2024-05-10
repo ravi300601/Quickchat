@@ -25,7 +25,7 @@ class ProfileForm(ModelForm):
         fields = ["username", "first_name", "last_name", "pic"]
 
 class ChatMessageForm(ModelForm):
-    body = forms.CharField(widget=forms.Textarea(attrs={"id":"msg_id", "class":"form-control", "rows": 1, "type":"text", "placeholder":"Type..."}))
+    body = forms.CharField(widget=forms.Textarea(attrs={"id":"msg-id", "class":"form-control", "rows": 1, "type":"text", "placeholder":"Type..."}))
     class Meta:
         model = ChatMessage
         fields = ["body",]

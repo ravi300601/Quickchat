@@ -46,17 +46,96 @@
         width: 0;
     }
 
-    .pill-button {
-        background-color: #ddd;
-        border: none;
-        color: black;
-        padding: 7px 10px;
-        text-align: center;
-        text-decoration: none;
+    .utility-container {
         display: inline-block;
-        cursor: pointer;
-        border-radius: 20px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.5rem;
     }
+    .utility-container ul {
+        padding: 3px 5px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        border-radius: 25px;
+        background-color: #ddd;
+        position: relative;
+        margin-bottom: auto;
+    }
+    .utility-container ul li {
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        padding: 1rem;
+        overflow: hidden;
+    }
+    .utility-container ul li:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    .utility-container ul li.emoji-selector {
+        background-color: white;
+        border-radius: 1rem;
+        cursor: default;
+        display: block;
+        padding: 0;
+        border: 1px solid #eee;
+        position: absolute;
+        bottom: 0%;
+        left: -100%;
+        width: 325px;
+        height: 350px;
+        z-index: 5;
+        opacity: 0;
+        pointer-events: none;
+        overflow: auto;
+        transition: bottom 0.3s ease, opacity 0.3s ease;
+    }
+    .utility-container ul li.emoji-selector.active {
+        bottom: 110%;
+        left: -100%;
+        opacity: 1;
+        pointer-events: all;
+    }
+    .utility-container ul li.emoji-selector .input-container {
+        padding: 1rem;
+        background-color: white;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+    .utility-container ul li.emoji-selector .input-container input {
+        border-radius: 25px;
+        border: 1px solid #eee;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        outline: none;
+    }
+    .utility-container ul li.emoji-selector ul.emoji-list {
+        background-color: white;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 0 1rem 1rem;
+        border-radius: 0;
+    }
+    .utility-container ul li.emoji-selector ul.emoji-list li {
+        height: 35px;
+        width: 35px;
+        border-radius: 0.25rem;
+        font-size: 1.5rem;
+    }
+
 </style>
 
 <div class="container-md me-1">
@@ -102,31 +181,97 @@
             <div class="col-8 col-sm-8 col-lg-9">
                 {{form.body}}
             </div>
-            <div class="btn-group col-2 col-sm-2 col-lg-1 pill-button px-0 pt-1">
-                <span>
-                    <a href="#" class="link-underline link-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-emoji-smile" viewBox="0 0 16 16">
+            <div class="btn-group col-2 col-sm-2 col-lg-1 px-0 utility-container">
+                <ul class="utility-group">
+                    <li class="emoji-selector container" id="emojiSelector">
+                        <div class="input-container">
+                            <input id="emojiSearch" type="text" name="" id="" placeholder="Search...">
+                        </div>
+                        <ul id="emojiList" class="emoji-list">
+                        </ul>
+                    </li>
+                    <li id="emojiSelectorIcon"><a href="#" class="link-underline link-secondary" id="emoji-button"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-emoji-smile m-1" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                         <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5"/>
-                      </svg></a> |
-                    <a href="#" class="link-underline link-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-emoji-smile" viewBox="0 0 16 16">
+                      </svg></a></li>
+                    <li><a href="#" class="link-underline link-secondary" id="emoji-button"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-emoji-smile m-1" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                         <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.5 3.5 0 0 0 8 11.5a3.5 3.5 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5"/>
-                      </svg></a>
-                </span>
-              </div>
+                      </svg></a></li>
+                </ul>
+            </div>
             <div class="col-2">
                 <button type="submit" class="btn btn-secondary w-100">Send</button>
             </div>
         </form>
-
     </div>
-</div>
 
 <script>
 
-    // $('#msg_id').emojioneArea({
-    //     pickerPosition: 'top',
-    // });
+    // disable send button if text-area is empty
+    var $button = $("button");
+    const chatMsg = document.getElementById('msg-id');
+    $button.prop("disabled", true);
+
+    chatMsg.addEventListener("input", () => {
+    $button.prop("disabled", (chatMsg.value === "")? true : false);
+    });
+
+    // add emoji selection in chat
+    const emojiSelectorIcon = document.getElementById('emojiSelectorIcon');
+    const emojiSelector = document.getElementById('emojiSelector');
+    const emojiList = document.getElementById('emojiList');
+    const emojiSearch = document.getElementById('emojiSearch');
+
+
+    emojiSelectorIcon.addEventListener('click', () => {
+        emojiSelector.classList.toggle('active');
+    });
+
+    fetch('https://emoji-api.com/emojis?access_key=823739d76808914f9e06a049539148d39cb32eba')
+        .then(res => res.json())
+        .then(data => loadEmoji(data))
+
+    function loadEmoji(data) {
+        data.forEach(emoji => {
+            let li = document.createElement('li');
+            li.setAttribute('emoji-name', emoji.slug);
+            li.textContent = emoji.character;
+            emojiList.appendChild(li);
+            li.addEventListener('click', function() {
+            addEmoji(emoji.character);
+            });
+        });
+    }
+
+    function addEmoji(emoji) {
+        let textarea = document.getElementById('msg-id');
+
+        // Insert the emoji character at the current cursor position
+        let cursorPos = textarea.selectionStart;
+        let textBeforeCursor = textarea.value.substring(0, cursorPos);
+        let textAfterCursor = textarea.value.substring(cursorPos);
+        textarea.value = textBeforeCursor + emoji + textAfterCursor;
+
+        // Move the cursor after the inserted emoji
+        textarea.selectionStart = cursorPos + emoji.length;
+        textarea.selectionEnd = cursorPos + emoji.length;
+
+        // Trigger the input event to notify any listeners that the value has changed
+        textarea.dispatchEvent(new Event('input'));
+    }
+
+    emojiSearch.addEventListener('keyup', e => {
+        let value = e.target.value;
+        let emojis = document.querySelectorAll('#emojiList li');
+        emojis.forEach(emoji => {
+            if(emoji.getAttribute('emoji-name').toLowerCase().includes(value)){
+                emoji.style.display = 'flex';
+            } else {
+                emoji.style.display = 'none';
+            }
+        })
+    })
 
     // To keep scrollbar at bottom for recent chats
     var objDiv = document.getElementById("chat_body");
@@ -137,7 +282,7 @@
 
     function sendChat(e) {
         e.preventDefault()
-        let chatMessage = document.getElementById("msg_id").value;
+        let chatMessage = document.getElementById("msg-id").value;
 
         // to fetch resources asynchronously across the network
         async function postJSON(data, url) {
@@ -161,7 +306,8 @@
                 chatMessageBox.innerText = result;
                 chatMessageDiv.append(chatMessageBox);
                 chat_body.append(chatMessageDiv);
-                document.getElementById("msg_id").value = '';
+                document.getElementById("msg-id").value = '';
+                $button.prop("disabled", true);
 
                 // To keep scrollbar at bottom for recent chats
                 var objDiv = document.getElementById("chat_body");
@@ -201,7 +347,7 @@
                         chatMessageBox.innerText = lastMsg;
                         chatMessageDiv.append(chatMessageBox);
                         chat_body.append(chatMessageDiv);
-                        document.getElementById("msg_id").value = '';
+                        document.getElementById("msg-id").value = '';
                         // To keep scrollbar at bottom for recent chats
                         var objDiv = document.getElementById("chat_body");
                         objDiv.scrollTop = objDiv.scrollHeight;
