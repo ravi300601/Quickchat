@@ -4,25 +4,22 @@
 
 <style>
     ::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
-    background: transparent;  /* Optional: just make scrollbar invisible */
+        width: 0;  /* Remove scrollbar space */
+        background: transparent;  /* Optional: just make scrollbar invisible */
     }
 
     .empty-placeholder {
-      text-align: center;
-      padding: 20px;
-      color: #999; /* Placeholder text color */
+        text-align: center;
+        padding: 20px;
+        color: #999; /* Placeholder text color */
     }
 </style>
 
 <div class="container rounded bg-body-tertiary shadow rounded" style="margin-top: 100px;">
     <nav class="navbar navbar-expand-lg navbar-light bg-light px-1 py-0">
         <a class="navbar-brand" href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-              </svg>
-            <!-- <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24"
-                class="d-inline-block align-text-top"> -->
+            <img src="../../../static/img/logo.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
             Quick Chat
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +56,7 @@
                     </li>
                 </ul>
             </span>
+        </div>
     </nav>
 
     {% block mutual_friend %}

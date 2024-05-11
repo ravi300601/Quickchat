@@ -58,57 +58,59 @@
             {% endfor %}
 
         </div>
+    </div>
+</div>
 
-        <script>
-            let add_btns = document.querySelectorAll(".add-btn")
-            let cancel_btns = document.querySelectorAll(".del-btn")
+<script>
+    let add_btns = document.querySelectorAll(".add-btn")
+    let cancel_btns = document.querySelectorAll(".del-btn")
 
-            //looping through the "add-friend button"
-            for (let btn of add_btns) {
-                btn.addEventListener("click", send_friend_request)
-            }
+    //looping through the "add-friend button"
+    for (let btn of add_btns) {
+        btn.addEventListener("click", send_friend_request)
+    }
 
-            for (let btn of cancel_btns) {
-                btn.addEventListener("click", cancel_friend_request)
-            }
+    for (let btn of cancel_btns) {
+        btn.addEventListener("click", cancel_friend_request)
+    }
 
-            async function postJSON(data, btn) {
-                let url = ""
-                if (btn.title == "Delete Request"){
-                    url = "{% url 'cancel-request' %}"
-                }else{
-                    url = "{% url 'send-request' %}"
-                }
-                try {
-                    const response = await fetch(url, {
-                        method: "POST", // or 'PUT'
-                        headers: {
-                            "Content-Type": "application/json",
-                            'X-CSRFToken': csrftoken
-                        },
-                        body: JSON.stringify(data),
-                    });
+    async function postJSON(data, btn) {
+        let url = ""
+        if (btn.title == "Delete Request"){
+            url = "{% url 'cancel-request' %}"
+        }else{
+            url = "{% url 'send-request' %}"
+        }
+        try {
+            const response = await fetch(url, {
+                method: "POST", // or 'PUT'
+                headers: {
+                    "Content-Type": "application/json",
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(data),
+            });
 
-                    const result = await response.json();
-                    console.log("Success:", result);
-                    window.location.reload()
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            }
+            const result = await response.json();
+            console.log("Success:", result);
+            window.location.reload()
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
 
-            function send_friend_request(e) {
-                const btn = e.target
-                const datasetId = e.target.dataset.id;
-                postJSON(datasetId, btn);
-            }
+    function send_friend_request(e) {
+        const btn = e.target
+        const datasetId = e.target.dataset.id;
+        postJSON(datasetId, btn);
+    }
 
-            function cancel_friend_request(e) {
-                const btn = e.target
-                const datasetId = e.target.dataset.id;
-                postJSON(datasetId, btn);
-            }
-        </script>
+    function cancel_friend_request(e) {
+        const btn = e.target
+        const datasetId = e.target.dataset.id;
+        postJSON(datasetId, btn);
+    }
+</script>
 
-        {% endblock details %}
+{% endblock details %}
 
