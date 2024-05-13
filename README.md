@@ -63,7 +63,7 @@ Contributions are welcome! If you'd like to contribute to Quick App, please foll
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/license/mit) file for details.
 
 ## Acknowledgements
 Quick App is built using the Django framework and various open-source libraries. We would like to extend our gratitude to the developers of these tools for their contributions.
