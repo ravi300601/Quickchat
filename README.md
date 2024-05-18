@@ -1,6 +1,6 @@
-# Quick App
+# QuickChat App
 
-Quick App is a real-time chat application built using Django, providing users with features like user authentication, friend suggestions, emoji integration, and profile management.
+QuickChat App is a real-time chat application built using Django, providing users with features like user authentication, friend suggestions, emoji integration, and profile management.
 
 ## Features
 
