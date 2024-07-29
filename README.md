@@ -4,7 +4,7 @@ QuickChat is a real-time communication application built using Django and levera
 
 **Technology Stack**
 
-* **Backend:** Django, Python, Rest Api, PostgreSQL, Docker
+* **Backend:** Django, Python, RESTful Api, PostgreSQL, Docker
 * **Frontend:** HTML, Bootstrap, Javacript
 
 
