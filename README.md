@@ -1,17 +1,21 @@
 # QuickChat
 
-QuickChat is a real-time communication application with user-friendly features such as user authentication, private chats, friend management, and emoji integration. It leverages PostgreSQL for efficient data storage and retrieval, ensuring a smooth user experience.
+QuickChat is a real-time communication application built using Django and leverages a RESTful API for efficient data exchange. It offers a user-friendly interface with features like user authentication, private chats, friend management, and emoji integration. The application utilizes PostgreSQL for robust data storage and retrieval.
 
-## Technologies Used
-### Python || Django || PostgreSQL || Bootstrap || Docker
+**Technology Stack**
+
+* **Backend:** Django, Python, Rest Api, PostgreSQL, Docker
+* **Frontend:** HTML, Bootstrap, Javacript
 
 
-## Features
-1. Real-time communication: Supports instant messaging between users.
-2. User authentication: Secure login and registration system.
-3. Private chats: Users can engage in one-on-one conversations.
-4. Friend management: Add and manage friends within the application.
-5. Emoji integration: Enhance conversations with emoji support.
+**Key Features**
+
+* User authentication and registration
+* Private chat rooms with real-time messaging
+* Friend management, including adding, removing, and searching for friends
+* Integration of emojis for enhanced communication
+* PostgreSQL database for reliable data storage and retrieval
+* RESTful API for chat and emoji functionalities
 
 ## Installation
 
